@@ -2,21 +2,23 @@ import connectDB from './db/connect.js'
 import express from "express";
 import tasks from "./routes/tasks.js"
 import dotenv from "dotenv"
+import notFound from './middleware/notFound.js';
+import errorHandlerMiddleware from './middleware/errorHandler.js';
 
 dotenv.config()
 
 const app = express()
 
 app.use(express.json())
-// app.use(express.static('./public'))
-
-app.get('/hello', (req, res) => {
-  res.send("task management app")
-})
+app.use(express.static('./public'))
 
 app.use('/api/v1/tasks', tasks)
 
-const port = 3000
+app.use(notFound)
+
+app.use(errorHandlerMiddleware)
+
+const port = process.env.PORT || 3000
 
 const start = async () => {
   try {
